@@ -1,6 +1,5 @@
-package com.example.wallpaperapplication;
+package com.example.natureapplication;
 
-import android.Manifest;
 import android.app.WallpaperManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -20,21 +18,15 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -56,9 +48,14 @@ public class ViewWallpaper extends AppCompatActivity {
         title = getIntent().getStringExtra("title");
         image = getIntent().getStringExtra("image");
         imageViewFull = findViewById(R.id.imageFull);
-        imageViewDownload = findViewById(R.id.downloadImage);
+//        imageViewDownload = findViewById(R.id.downloadImage);
         buttonLockScreen = findViewById(R.id.setLockScreen);
         buttonHomeScreen = findViewById(R.id.setHomeScreen);
+
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+        circularProgressDrawable.setStrokeWidth(5);
+        circularProgressDrawable.setCenterRadius(30);
+        circularProgressDrawable.start();
 
         Glide.with(this).load(image).centerCrop().listener(new RequestListener<Drawable>() {
             @Override
@@ -80,30 +77,30 @@ public class ViewWallpaper extends AppCompatActivity {
                         setWallpaper("Home");
                     }
                 });
-                imageViewDownload.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Dexter.withContext(getApplicationContext()).withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE).withListener(new PermissionListener() {
-                            @Override
-                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                downloadFromImageView();
-                            }
-
-                            @Override
-                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                                Toast.makeText(getApplicationContext(),"Need permission",Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
-
-                            }
-                        })
-                    }
-                });
+//                imageViewDownload.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Dexter.withContext(getApplicationContext()).withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE).withListener(new PermissionListener() {
+//                            @Override
+//                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+//                                downloadFromImageView();
+//                            }
+//
+//                            @Override
+//                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+//                                Toast.makeText(getApplicationContext(),"Need permission",Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            @Override
+//                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+//
+//                            }
+//                        });
+//                    }
+//                });
                 return false;
             }
-        }).error(R.drawable.no_image).placeholder(R.drawable.ic_loading).into(imageViewFull);
+        }).error(R.drawable.no_image).placeholder(circularProgressDrawable).into(imageViewFull);
 
 
     }

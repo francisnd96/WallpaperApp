@@ -1,4 +1,4 @@
-package com.example.wallpaperapplication;
+package com.example.natureapplication;
 
 public class DataHandler {
     String title, thumbnail, image;

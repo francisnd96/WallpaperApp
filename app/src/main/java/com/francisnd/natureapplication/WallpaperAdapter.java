@@ -1,4 +1,4 @@
-package com.example.wallpaperapplication;
+package com.example.natureapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 
@@ -36,8 +37,13 @@ public class WallpaperAdapter extends ArrayAdapter {
         TextView textView = view.findViewById(R.id.title);
         ImageView imageView = view.findViewById(R.id.listImage);
 
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getContext());
+        circularProgressDrawable.setStrokeWidth(5);
+        circularProgressDrawable.setCenterRadius(30);
+        circularProgressDrawable.start();
+
         textView.setText(dataList.getTitle());
-        Glide.with(context).load(dataList.getThumbnail()).centerCrop().error(R.drawable.no_image).placeholder(R.drawable.ic_loading).into(imageView);
+        Glide.with(context).load(dataList.getThumbnail()).centerCrop().error(R.drawable.no_image).placeholder(circularProgressDrawable).into(imageView);
 
         return view;
 
