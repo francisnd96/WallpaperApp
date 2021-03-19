@@ -54,18 +54,28 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-                <ImageView
+                <View
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:background="#85272727"
                     android:padding="10dp"
                     android:layout_margin="10dp"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_hd" />
+                    />
 
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/fav"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/ic_baseline_favorite_26"
+            android:layout_marginTop="18dp"
+            android:padding="20dip"
+            />
 
     </androidx.cardview.widget.CardView>
 

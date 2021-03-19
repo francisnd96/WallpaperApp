@@ -1,4 +1,4 @@
-package com.example.natureapplication;
+package com.francisnd.natureapplication;
 
 import org.junit.Test;
 

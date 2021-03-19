@@ -1,4 +1,4 @@
-package com.example.natureapplication;
+package com.francisnd.natureapplication;
 
 public class DataHandler {
     String title, thumbnail, image;
@@ -19,5 +19,17 @@ public class DataHandler {
 
     public String getImage() {
         return image;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

@@ -1,6 +1,21 @@
 <resources>
-    <string name="app_name">Wallpaper Application</string>
+    <string name="app_name">Nature HD Wallpapers</string>
     <string name="title">Title</string>
     <string name="home_screen">Home Screen</string>
     <string name="lock_screen">Lock Screen</string>
+    <string name="title_activity_tabbed">Tabbed</string>
+    <string name="tab_text_all">All</string>
+    <string name="tab_text_1">Trees</string>
+    <string name="tab_text_2">Rivers</string>
+    <string name="tab_text_3">Mountains</string>
+    <string name="tab_text_4">Birds</string>
+    <string name="tab_text_5">Trails</string>
+    <string name="tab_text_6">Gardens</string>
+    <string name="tab_text_7">Sunsets</string>
+    <string name="tab_text_8">Landscapes</string>
+    <string name="title_activity_bottom_nav">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_favourite">Favourite</string>
+    <string name="send_to">Send to</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

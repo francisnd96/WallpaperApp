@@ -1,13 +1,13 @@
-package com.example.natureapplication;
+package com.francisnd.natureapplication;
 
 import android.os.Bundle;
 
+import com.francisnd.natureapplication.R;
+import com.francisnd.natureapplication.ui.main.SectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.natureapplication.ui.main.SectionsPagerAdapter;
 
 public class Tabbed extends AppCompatActivity {
 
@@ -20,14 +20,5 @@ public class Tabbed extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-//        FloatingActionButton fab = findViewById(R.id.fab);
-
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
 }

@@ -1,7 +1,11 @@
-package com.example.natureapplication;
+package com.francisnd.natureapplication;
 
+import android.Manifest;
 import android.app.WallpaperManager;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -9,7 +13,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -18,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
@@ -25,7 +32,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.francisnd.natureapplication.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,7 +49,9 @@ public class ViewWallpaper extends AppCompatActivity {
     Bitmap bitmap;
     WallpaperManager wallpaperManager;
     ImageView imageViewFull, imageViewDownload;
-    Button buttonLockScreen, buttonHomeScreen;
+    Button buttonLockScreen, buttonHomeScreen, share;
+    private InterstitialAd mInterstitialAd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +64,12 @@ public class ViewWallpaper extends AppCompatActivity {
 //        imageViewDownload = findViewById(R.id.downloadImage);
         buttonLockScreen = findViewById(R.id.setLockScreen);
         buttonHomeScreen = findViewById(R.id.setHomeScreen);
+        share = findViewById(R.id.share);
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
 
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
         circularProgressDrawable.setStrokeWidth(5);
@@ -69,12 +88,33 @@ public class ViewWallpaper extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         setWallpaper("Lock");
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
                     }
                 });
                 buttonHomeScreen.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         setWallpaper("Home");
+                        if (mInterstitialAd.isLoaded()) {
+                            mInterstitialAd.show();
+                        } else {
+                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+                        }
+                    }
+                });
+                share.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        setWallpaper("Share");
+//                        if (mInterstitialAd.isLoaded()) {
+//                            mInterstitialAd.show();
+//                        } else {
+//                            Log.d("TAG", "The interstitial wasn't loaded yet.");
+//                        }
                     }
                 });
 //                imageViewDownload.setOnClickListener(new View.OnClickListener() {
@@ -147,10 +187,16 @@ public class ViewWallpaper extends AppCompatActivity {
                 if (type.equals("Lock")) {
                     wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_LOCK);
                     Toast.makeText(getApplicationContext(),"lock screen set", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (type.equals("Home")){
                     wallpaperManager.setBitmap(bitmap, null, true, WallpaperManager.FLAG_SYSTEM);
                     Toast.makeText(getApplicationContext(),"home screen set", Toast.LENGTH_SHORT).show();
-
+                }else{
+                    isStoragePermissionGranted();
+                    Uri pic = getImageUri(getApplicationContext(), bitmap);
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("image/*");
+                    share.putExtra(Intent.EXTRA_STREAM, pic);
+                    startActivity(Intent.createChooser(share,"Share via.."));
                 }
             }else{
                 wallpaperManager.setBitmap(bitmap);
@@ -160,6 +206,80 @@ public class ViewWallpaper extends AppCompatActivity {
         }catch (Exception e){
 
         }
+    }
+
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("e","Permission is granted");
+                return true;
+            } else {
+
+                Log.v("e","Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("e","Permission is granted");
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            Log.v("e","Permission: "+permissions[0]+ "was "+grantResults[0]);
+            //resume tasks needing this permission
+        }
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private void doCrop(Uri picUri) {
+        try {
+
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+
+            cropIntent.setDataAndType(picUri, "image/*");
+            cropIntent.putExtra("crop", "true");
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            cropIntent.putExtra("outputX", 128);
+            cropIntent.putExtra("outputY", 128);
+            cropIntent.putExtra("return-data", true);
+            startActivityForResult(cropIntent, 1);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            // display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (data != null) {
+                if(data.getExtras() == null) {
+                    Bundle extras = data.getExtras();
+                    Bitmap bitmap = extras.getParcelable("data");
+                    imageViewFull.setImageBitmap(bitmap);
+                }
+            }
+        }
+
     }
 
     private int[] getScreenSize(){
