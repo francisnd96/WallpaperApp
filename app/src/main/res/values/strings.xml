@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Nature HD Wallpapers</string>
     <string name="title">Title</string>
-    <string name="home_screen">Home Screen</string>
-    <string name="lock_screen">Lock Screen</string>
+    <string name="home_screen">Set Home Screen</string>
+    <string name="lock_screen">Set Lock Screen</string>
     <string name="title_activity_tabbed">Tabbed</string>
     <string name="tab_text_all">All</string>
     <string name="tab_text_1">Trees</string>
