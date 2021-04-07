@@ -7,10 +7,10 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.francisnd.natureapplication"
+        applicationId "com.francisnd.natureapplication2"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 3
+        versionCode 4
         versionName '2.0'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
